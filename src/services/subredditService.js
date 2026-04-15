@@ -11,7 +11,7 @@ export const fetchAllSubreddits = async () => {
 };
 
 export const createNewSubreddit = async (name, description, author) => {
-  const existingSubreddit = await Subreddit.findOne({ name });
+  const existingSubreddit = await Subreddit.findOne({ name: String(name) });
   if (existingSubreddit) {
     throw createAppError("Subreddit with this name already exists.", 409);
   }

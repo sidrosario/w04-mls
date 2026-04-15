@@ -88,7 +88,7 @@ describe("Subreddits API", () => {
 
     expect(response.status).toBe(400);
     expect(response.body.success).toBe(false);
-    expect(response.body.message).toBe("Name, description, and author are required.");
+    expect(response.body.message).toBe("Name and description are required.");
   });
 
   it("POST /api/subreddits -> should fail if subreddit already exists", async () => {

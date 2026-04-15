@@ -29,10 +29,11 @@ export const getThreadByID = async (req, res) => {
 
 // POST /api/threads
 export const createThread = async (req, res) => {
-  const { title, content, author, subreddit } = req.body;
+  const { title, content, subreddit } = req.body;
+  const author = req.user.userId;
 
-  if(!title || !content || !author || !subreddit) {
-    throw createAppError("Title, content, author, and subreddit are required.", 400);
+  if(!title || !content || !subreddit) {
+    throw createAppError("Title, content, and subreddit are required.", 400);
   }
 
   const populatedThread = await createNewThread(
@@ -51,7 +52,7 @@ export const createThread = async (req, res) => {
 // PUT /api/threads/:id
 
 export const updateThread = async (req, res) => {
-  const updatedThread = await updateThreadById(req.params.id, req.body);
+  const updatedThread = await updateThreadById(req.params.id, req.body, req.user.userId);
   res.status(200).json({
     success: true,
     message: "Thread updated successfully",
@@ -61,7 +62,7 @@ export const updateThread = async (req, res) => {
 
 // DELETE /api/threads/:id
 export const deleteThread = async (req, res) => {
-  const deletedThread = await deleteThreadById(req.params.id);
+  const deletedThread = await deleteThreadById(req.params.id, req.user.userId);
   res.status(200).json({
     success: true,
     message: "Thread deleted successfully",
