@@ -124,7 +124,7 @@ describe("Threads API", () => {
 
     expect(response.status).toBe(400);
     expect(response.body.success).toBe(false);
-    expect(response.body.message).toBe("Title, content, author, and subreddit are required.");
+    expect(response.body.message).toBe("Title, content, and subreddit are required.");
   });
 
   // -------------------

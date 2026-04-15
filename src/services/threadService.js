@@ -39,25 +39,42 @@ export const createNewThread = async (title, content, author, subreddit) => {
   return populatedThread;
 };
 
-export const updateThreadById = async (id, updateData) => {
-  const updatedThread = await Thread.findByIdAndUpdate(id, updateData, {
+export const updateThreadById = async (id, updateData, userId) => {
+  const thread = await Thread.findById(id);
+
+  if (!thread) {
+    throw createAppError("Thread not found", 404);
+  }
+
+  if (thread.author.toString() !== userId.toString()) {
+    throw createAppError("Forbidden: you can only edit your own threads", 403);
+  }
+
+  const { title, content } = updateData;
+  const sanitizedUpdate = {};
+  if (title !== undefined) sanitizedUpdate.title = String(title);
+  if (content !== undefined) sanitizedUpdate.content = String(content);
+
+  const updatedThread = await Thread.findByIdAndUpdate(id, sanitizedUpdate, {
     new: true,
     runValidators: true,
   });
 
-  if (!updatedThread) {
-    throw createAppError("Thread not found", 404);
-  }
-
   return updatedThread;
 };
 
-export const deleteThreadById = async (id) => {
-  const deletedThread = await Thread.findByIdAndDelete(id);
+export const deleteThreadById = async (id, userId) => {
+  const thread = await Thread.findById(id);
 
-  if (!deletedThread) {
+  if (!thread) {
     throw createAppError("Thread not found", 404);
   }
 
-  return deletedThread;
+  if (thread.author.toString() !== userId.toString()) {
+    throw createAppError("Forbidden: you can only delete your own threads", 403);
+  }
+
+  await Thread.findByIdAndDelete(id);
+
+  return thread;
 };

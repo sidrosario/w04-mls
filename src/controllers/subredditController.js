@@ -15,10 +15,11 @@ export const getAllSubreddits = async (req, res) => {
 };
 
 export const createSubreddit = async (req, res) => {
-  const { name, description, author } = req.body;
+  const { name, description } = req.body;
+  const author = req.user.userId;
 
-  if (!name || !description || !author) {
-    throw createAppError("Name, description, and author are required.", 400);
+  if (!name || !description) {
+    throw createAppError("Name and description are required.", 400);
   }
 
   const newSubreddit = await createNewSubreddit(name, description, author);
